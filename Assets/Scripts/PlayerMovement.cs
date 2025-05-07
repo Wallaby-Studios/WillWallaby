@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -12,9 +13,10 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField]
     private float moveSpeed, jumpSpeed;
-    private int maxJumpCount, currentJumpCount;
 
+    private int currentJumpCount;
     private Vector2 moveAmount;
+
     //private Animator animator;
     private Rigidbody2D rb;
 
@@ -26,8 +28,9 @@ public class PlayerMovement : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        maxJumpCount = 2;
-        currentJumpCount = maxJumpCount;
+        currentJumpCount = AnimalManager.instance.GetMaxJumpCount();
+
+        GetComponent<SpriteRenderer>().material.color = AnimalManager.instance.GetAnimalColor();
     }
 
     // Update is called once per frame
@@ -46,19 +49,40 @@ public class PlayerMovement : MonoBehaviour
         Move();
     }
 
-    private void Move() {
-        //animator.SetFloat("Speed", moveAmount.x);
+    private bool CanMove() {
+        return true;
+    }
 
-        Vector2 velocity = rb.linearVelocity;
-        velocity.x = moveAmount.x * moveSpeed;
-        rb.linearVelocity = velocity;
+    private bool CanMoveVertical() {
+        // Cast circles to the left and right of the player and check if it collides with a wall
+        return Physics2D.CircleCast(transform.position, groundColliderRadius, -transform.right, groundColliderCastDistance, groundLayer)
+            || Physics2D.CircleCast(transform.position, groundColliderRadius, transform.right, groundColliderCastDistance, groundLayer);
+    }
+
+    private void Move() {
+        if(CanMove()) {
+            //animator.SetFloat("Speed", moveAmount.x);
+
+            // Get the new horizontal movement
+            Vector2 newVelocity = rb.linearVelocity;
+            newVelocity.x = moveAmount.x * moveSpeed;
+
+            if(AnimalManager.instance.CanWallWalk() && CanMoveVertical()) {
+                // If the player can move vertically,
+                // get the new vertical movement
+                newVelocity.y = moveAmount.y * moveSpeed;
+            }
+
+            // Set the player's rigidbody's new velocity
+            rb.linearVelocity = newVelocity;
+        }
     }
 
     private bool IsGrounded() {
         // Cast a small circle at the base of the player and check if it collides with the ground
         if(Physics2D.CircleCast(transform.position, groundColliderRadius, -transform.up, groundColliderCastDistance, groundLayer)) {
             // Reset jump count when grounded
-            currentJumpCount = maxJumpCount;
+            currentJumpCount = AnimalManager.instance.GetMaxJumpCount();
             return true;
         } else {
             return false;
