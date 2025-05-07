@@ -97,7 +97,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &4431163730227197368
 MonoBehaviour:
@@ -125,6 +125,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerControls: {fileID: 4431163730227197368}
+  groundColliderRadius: 0.05
+  groundColliderCastDistance: 0.5
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 128
   moveSpeed: 10
   jumpSpeed: 30
 --- !u!1 &7147212691741793656

@@ -5,13 +5,18 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private PlayerControls playerControls;
 
-    private Vector2 moveAmount;
-    //private Animator animator;
-    private Rigidbody2D rb;
+    [SerializeField]
+    private float groundColliderRadius, groundColliderCastDistance;
+    [SerializeField]
+    private LayerMask groundLayer;
 
     [SerializeField]
     private float moveSpeed, jumpSpeed;
     private int maxJumpCount, currentJumpCount;
+
+    private Vector2 moveAmount;
+    //private Animator animator;
+    private Rigidbody2D rb;
 
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
@@ -30,6 +35,8 @@ public class PlayerMovement : MonoBehaviour
     {
         moveAmount = playerControls.GetMove();
 
+        IsGrounded();
+
         if(playerControls.GetJump()) {
             Jump();
         }
@@ -47,17 +54,19 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = velocity;
     }
 
-    private bool isGrounded() {
-        // TODO: Figure out grounding
-
-        // TODO: Reset jump count when grounded
-        currentJumpCount = maxJumpCount;
-
-        return true;
+    private bool IsGrounded() {
+        // Cast a small circle at the base of the player and check if it collides with the ground
+        if(Physics2D.CircleCast(transform.position, groundColliderRadius, -transform.up, groundColliderCastDistance, groundLayer)) {
+            // Reset jump count when grounded
+            currentJumpCount = maxJumpCount;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void Jump() {
-        if(isGrounded() && currentJumpCount > 0) {
+        if(currentJumpCount > 0) {
             //animator.SetTrigger("Jump");
 
             // Using rb.AddForce() is not helpful here because of double jump.

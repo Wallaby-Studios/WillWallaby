@@ -352,7 +352,7 @@ GameObject:
   - component: {fileID: 1357738601}
   - component: {fileID: 1357738600}
   - component: {fileID: 1357738599}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -513,6 +513,10 @@ PrefabInstance:
     - target: {fileID: 2293888367245449284, guid: d2043a1fe1f63a14785697540fb737ed, type: 3}
       propertyPath: m_Name
       value: PlayerPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 3900178893628873540, guid: d2043a1fe1f63a14785697540fb737ed, type: 3}
+      propertyPath: groundLayer.m_Bits
+      value: 128
       objectReference: {fileID: 0}
     - target: {fileID: 8598461060691083999, guid: d2043a1fe1f63a14785697540fb737ed, type: 3}
       propertyPath: m_LocalPosition.x
